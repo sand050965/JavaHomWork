@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset = "utf-8"/>
+	<title>骰子</title>
+
+
+</head>
+
+
+<body>
+	<div>
+		請輸入骰子面數:<select id="dSelect">
+		  <option value="1">1面</option>
+		  <option value="2">2面</option>
+ 		  <option value="3">3面</option>
+ 		  <option value="4">4面</option>
+		  <option value="5">5面</option>
+ 		  <option value="6">6面</option>
+		</select>
+		
+		請輸入骰子數量:<input type="text" id="dNums" style="width: 30px; border:1px solid LightSteelblue" onkeyup="value=value.replace(/[^\d]/g,'')"/>
+		請輸入要丟擲幾次:<input type="text" id="dTimes" style="width: 30px; border:1px solid LightSteelblue" onkeyup="value=value.replace(/[^\d]/g,'')"/>
+	</div>
+	<div>
+		<button id="btn" onclick="run()">擲出</button>
+	</div>
+	<p id="demo"></p>
+	<div>
+	<table id="diceTable"></table>
+	</div>
+
+</body>
+
+<script>
+	function run(){
+		var dFace = document.getElementById('dSelect').value;
+		var dNums  = document.getElementById('dNums').value;
+		var dTimes  = document.getElementById('dTimes').value;	
+
+
+		if (dNums == "" && dTimes == "") {
+			alert('請輸入骰子數量、丟擲次數。');
+			return;
+		}
+		
+		else if (dNums == "") {
+			alert('請輸入骰子數量。');
+			return;
+		}
+
+		else if (dTimes == "") {
+			alert('請輸入丟擲次數。');
+			return;
+		}
+
+
+		let map = new Map();
+		let totalMap = new Map();
+		let timesMap = new Map();
+		
+		var Result = [];
+		
+		for(let i = 0; i<dTimes; i++){
+			var sum = 0;			
+			for(j = 0; j<dNums; j++){
+				var dice = Math.floor(Math.random()*dFace+1);
+				sum += dice;
+			}	
+		Result.push(sum);
+		
+		}
+
+		Result.sort();
+		console.log(Result);
+
+                for (i = 0; i < Result.length; i++){
+			if (!totalMap.has(Result[i])){
+				map.set(Result[i],Result[i])
+				totalMap.set(Result[i],1);
+				timesMap.set(Result[i],"*");
+               		 }
+			else {
+     			 	totalMap.set(Result[i], totalMap.get(Result[i])+1);
+				timesMap.set(Result[i], timesMap.get(Result[i])+"*");
+                        }
+		}
+		var map2 = new Map([...map.entries()].sort((a, b) => a[1] - b[1]));
+		console.log(map2);
+		console.log(totalMap);
+		console.log(timesMap);
+				
+		
+
+		var table = document.getElementById("diceTable");
+		table.innerHTML = "";
+		var row = table.insertRow(0);
+		var x = row.insertCell(0);
+		var y = row.insertCell(1);
+
+
+		x.innerHTML = "Total";
+		y.innerHTML = "Times";
+	
+
+		for (var [key, value] of map2) {
+			var star = timesMap.get(key);
+			var times = totalMap.get(value);
+			var row = table.insertRow(-1);
+			var a = row.insertCell(0);
+			var b = row.insertCell(1);
+			var c = row.insertCell(2);
+			a.innerHTML = key;
+			b.innerHTML = times;
+			c.innerHTML = "<span style=\"background-color: red;\">" + star + "</span>";				
+		}
+
+	}
+</script>
+
+</html>
